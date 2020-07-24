@@ -58,3 +58,7 @@ It depends on your learning preference - what do you train?
 
 - Do you put most value on training the real life workflow that you probably will face in a company and prepare yourself for that?
   - Then go for SEPARATE repositories
+
+So the final, simplified recommendation is:
+- use the Mono Repo approach for own projects, e.g. portfolio apps
+- use the splitted Repo approach for team projects, e.g. your final project
