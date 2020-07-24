@@ -56,11 +56,32 @@ So store the following JSON in a file "vercel.json" in your main folder.
 With that config we will whitelist ALL our routes and do not need to configure them one by one. That simplifies the setup a lot.
 
 
+### Preparing the automatic build of React
+
+We need to tell vercel to build react on the server AFTER every deploy. 
+
+Vercel will only look for a "build" script in the package.json of your MAIN folder (so the package.json of your express app!). It will not look for it in the client folder.
+
+So we just create a build script in the top level package.json and will here just call the build script of react in the client folder:
+'build': 'npm run build --prefix client'
+
+Test if the build works by running: `npm run build` from your express folder (not within the client folder)
+
+That's it. Now Vercel will know which folder to build on deploy.
+
 ### Serving React over Express
 
 Now that we got our Express app deployment setup, we need to prepare express to serve React over a "route".
 
-We now setup a special route in express to serve the whole build folder. We can share a whole folder by using the express.static middleware.
+We want to serve react over our main route /.
+
+First we need to remove / comment out any express routes on the home route:
+
+` // app.use('/', indexController) `
+
+The home route should NOT get handled by express anymore. We want to serve React there!
+
+We now setup a special route in express to serve the whole build folder on the home route. We can share a whole folder by using the express.static middleware.
 
 Put this into your app.js file:
 
@@ -71,13 +92,34 @@ app.use(express.static(path.join(__dirname, 'client', 'build'))) // please adapt
 
 It is important that you do that BEFORE you setup any other routes! So kind of like "Serve React first" approach (to prevent name conflicts of some build folder files with express routes that could have the same name).
 
+#### First deploy test
+
+Time for a first deploy test if everything works!
+
+Make sure you are in your express folder.
+
+Open a terminal and simply run: `vercel`
+
+Leave all the defaults that vercel offers you (so never manually state Y or N, just hit enter on every question).
+
+Click on the URL at the end.
+
+Check if you get your React app on the home route.
+
+Now check one of your express backend routes (e.g. /users). Here you should get now see the Express API responding.
+
+
 #### Enable routes of React router
 
 Now we finally need to address the React routes.
 
-E.g. we have a React frontend route /profiles. But remember: We serve now React over express! Express will look now for a route "profiles". We do not have an Express route with that name. So Express would just say "route does not exist" and throw an error.
+E.g. we have a React frontend route /profiles. But remember: We serve now React over express! Express will look now for a backend route "profiles". We do not have an Express route with that name. So Express would just say "route does not exist" and throw an error.
 
-So we now - AFTER all other routes were declared - need to setup a "catch all" route which will forward every route that does not match an express route - to React! Respectively to the index.html file. That is the final trick to make React routing work!
+We now - AFTER all other routes were declared - need to setup a "catch all" route which will forward every route that does not match an express route - to React! Respectively to the index.html file. 
+
+React router will then receive that route. And can process it.
+
+That is the final trick to make React routing work!
 
 ```
 // for all routes not handled by a backend route: 
@@ -90,6 +132,12 @@ app.get('*', function(req, res, next) {
 This will, e.g., catch a request like yourverceldomain.com/profile (if we do not have a GET route /profile in Express!) and will forward it to React. 
 
 So React router can handle the routes where Express has not matching route. If the route does not exist, React will also handle the error.
+
+Setup some React routing in your app. Test if it works LOCALLY first before you deploy :-)
+
+Then run: `vercel --prod`
+
+And check now if your routing also works on your deployed vercel app.
 
 #### Prevent route naming conflicts 
 
@@ -126,14 +174,6 @@ you do:
 `app.use('/api/users', usersRouter)`
 
 And that's it! No conflict between frontend and backend routes anymore!
-
-
-### Preparing the automatic build of React
-
-Finally we need to tell vercel to build react on every upload. Vercel will only look for a "build" script in the package.json of your main folder (so of your express app!). It will not look for it in the client folder.
-
-So we just create a build script in the top level package.json and  will here just call the build script of react in the client folder:
-'build': 'npm run build --prefix client'
 
 
 ### Environment Variables
