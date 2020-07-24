@@ -133,7 +133,40 @@ So we just create a build script in the top level package.json and  will here ju
 'build': 'npm run build --prefix client'
 
 
-### Summary - all steps 
+### Environment Variables
+
+Sensitive information used in the BACKEND, like connection details for the database, should never be commited publicly to your code repository.
+
+Therefore you can either use the dotenv package to store your sensitive information outside of your code in an .env file that you add to your .gitignore file (if it is not already listed there).
+
+The other - more flexible - way is to create a env.json file so you can store even nested configuration.
+
+Or, even more flexible, use an "env.js" file, where you can store your configuration as json and export it at the end. 
+
+I like this approach most, because you do not need to install a separate package (like .dotenv), it gives you the flexibiliy to use all of JavaScript in your config, you can store javascript comments for each section (JSON does not allow comments) and you do not have the strict JSON file rules (=> the quoting hell :)). 
+
+All in all: Go for an env.js, it will be worth it.
+
+Example env.js file:
+```
+const conf = {
+  mongodb: {
+    user: '',
+    pw: ''
+    serverUrl: '',
+  },
+  auth: {
+    jwt-secret: 'holySecret2020',
+    cookie-name: 'auth-token',
+    cookie-lifetime: 1000*60*15, // milliseconds * seconds * minutes 
+  }
+  ...
+}
+
+module.exports = conf
+```
+
+### Summary - the minimal steps 
 
 Finally a quick walkthrough how to test a vercel fullstack deploy with the least effort right now. All necessary code snippets you find above.
 
