@@ -141,19 +141,19 @@ Therefore you can either use the dotenv package to store your sensitive informat
 
 The other - more flexible - way is to create a env.json file so you can store even nested configuration.
 
-Or, even more flexible, use an "env.js" file, where you can store your configuration as json and export it at the end. 
+Or, even more flexible, use an ".env.js" file, where you can store your configuration as json and export it at the end. 
 
 I like this approach most, because you do not need to install a separate package (like .dotenv), it gives you the flexibiliy to use all of JavaScript in your config, you can store javascript comments for each section (JSON does not allow comments) and you do not have the strict JSON file rules (=> the quoting hell :)). 
 
-All in all: Go for an env.js, it will be worth it.
+All in all: Go for an .env.js, it will be worth it.
 
-Example env.js file:
+Example .env.js file:
 ```
 const conf = {
   mongodb: {
-    user: '',
-    pw: ''
-    serverUrl: '',
+    user: '<yourRealUserName>',
+    pw: '<yourRealPassword>'
+    serverUrl: '<mongoatlasServerUrl>',
   },
   auth: {
     jwt-secret: 'holySecret2020',
@@ -165,6 +165,36 @@ const conf = {
 
 module.exports = conf
 ```
+
+Important! Add the .env.js file to your .gitignore!
+
+But how do others know, who will checkout your code, what they need to put in that file?
+
+There you often see a sample config with dummy (non sensitive) values. 
+
+Example:
+
+```
+const conf = {
+  mongodb: {
+    user: 'username',
+    pw: 'pw123'
+    serverUrl: 'mongodb://someatlasurl.com/your_db_name',
+  },
+  auth: {
+    jwt-secret: 'holySecret2020',
+    cookie-name: 'your-token',
+    cookie-lifetime: 1000*60*15, // = 15 minutes (milliseconds * seconds * minutes)
+  }
+  ...
+}
+
+module.exports = conf
+```
+
+THAT one you can safely add and commit to your code repository. So other have a sample and create their own .env.js file and put in there THEIR OWN sensitive information.
+
+That's it! This is how you can create a secure and easy to share configuration for your app easily. 
 
 ### Summary - the minimal steps 
 
