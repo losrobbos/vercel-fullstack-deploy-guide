@@ -63,9 +63,13 @@ We need to tell vercel to build react on the server AFTER every deploy.
 Vercel will only look for a "build" script in the package.json of your MAIN folder (so the package.json of your express app!). It will not look for it in the client folder.
 
 So we just create a build script in the top level package.json and will here just call the build script of react in the client folder:
+```
 'build': 'npm run build --prefix client'
+```
 
-Test if the build works by running: `npm run build` from your express folder (not within the client folder)
+Test if the build works by running: 
+`npm run build` 
+from your express folder (not within the client folder!)
 
 That's it. Now Vercel will know which folder to build on deploy.
 
