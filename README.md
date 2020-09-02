@@ -58,9 +58,13 @@ With that config we will whitelist ALL our routes and do not need to configure t
 
 ### Preparing the automatic build of React
 
-We need to tell vercel to build react on the server AFTER every deploy. 
+We need to configure a build of react on every deploy.
 
-Vercel will only look for a "build" script in the package.json of your MAIN folder (so the package.json of your express app!). It will not look for it in the client folder.
+We can either do the build locally and then deploy. Or we deploy and let Vercel do the build.
+
+Configuring a "post build" (= the build on vercel site, so "post" (=after) deploy) with Vercel is actually not straight forward together with hosting React within node.
+
+So it is advisable to do the build locally before deploy, to keep configuration clear.  
 
 So we just create a build script in the top level package.json and will here just call the build script of react in the client folder:
 ```
@@ -71,7 +75,20 @@ Test if the build works by running:
 `npm run build` 
 from your express folder (not within the client folder!)
 
-That's it. Now Vercel will know which folder to build on deploy.
+Now we need to configure that before each deploy we run the build.
+
+We do this by adding a deploy + predeploy script to package.json:
+
+```
+"predeploy": "npm run build",
+"deploy": "vercel --prod"
+
+```
+
+Now on every run of `npm run deploy` the build will be run automatically.
+
+That's it.
+
 
 ### Serving React over Express
 
