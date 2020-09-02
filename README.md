@@ -68,7 +68,7 @@ So it is advisable to do the build locally before deploy, to keep configuration 
 
 So we just create a build script in the top level package.json and will here just call the build script of react in the client folder:
 ```
-'build': 'npm run build --prefix client'
+"build": "npm run build --prefix client"
 ```
 
 Test if the build works by running: 
