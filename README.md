@@ -119,7 +119,7 @@ Time for a first deploy test if everything works!
 
 Make sure you are in your express folder.
 
-Open a terminal and simply run: `vercel`
+Open a terminal and run: `npm run deploy`
 
 Leave all the defaults that vercel offers you (so never manually state Y or N, just hit enter on every question).
 
@@ -156,7 +156,7 @@ So React router can handle the routes where Express has not matching route. If t
 
 Setup some React routing in your app. Test if it works LOCALLY first before you deploy :-)
 
-Then run: `vercel --prod`
+Then run `npm run deploy` again.
 
 And check now if your routing also works on your deployed vercel app.
 
@@ -266,10 +266,10 @@ Finally a quick walkthrough how to test a vercel fullstack deploy with the least
 
 - Create a project with express generator
 - Create a folder "client" in there and run npx create-react-app in the client folder
-- Add a build script for building react in the package.json of your main express folder (so vercel can find that)
+- Add a build script for building react + the deploy and predeploy scripts in ththe package.json of your main express folder
 - Place the two route handlers above for serving react from express, in your app.js file
 - Add the vercel.json above in your express main folder
-- Run vercel
+- Run `npm run deploy`
 - Open the generated URL
 
 That's it. This should do it. 
