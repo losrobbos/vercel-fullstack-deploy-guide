@@ -46,8 +46,7 @@ So store the following JSON in a file "vercel.json" in your main folder.
   "routes": [
       { 
         "src": "/(.*)", 
-        "dest": "app.js",
-        "methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
+        "dest": "app.js"
       }
     ]
 }
@@ -62,20 +61,24 @@ We need to configure a build of react on every deploy.
 
 We can either do the build locally and then deploy. Or we deploy and let Vercel do the build.
 
-Configuring a "post build" (= the build on vercel site, so "post" (=after) deploy) with Vercel is actually not straight forward together with hosting React within node.
+Configuring a "post build" (= building the app on vercel server after deploy) with Vercel is actually not straight forward when doing a fullstack deploy of React within Express.
 
-So it is advisable to do the build locally before deploy, to keep configuration clear.  
+So it is advisable to do the build locally before you deploy. 
 
-So we just create a build script in the top level package.json and will here just call the build script of react in the client folder:
+That way you will keep the configuration clear and simple.  
+
+So we just create a build script in the top level package.json.
+
+Here we call the build script of react in the client folder:
 ```
 "build": "npm run build --prefix client"
 ```
 
 Test if the build works by running: 
 `npm run build` 
-from your express folder (not within the client folder!)
+from your project folder (not within the client folder!)
 
-Now we need to configure that before each deploy we run the build.
+Now we need to configure to perform a build before each deploy.
 
 We do this by adding a deploy + predeploy script to package.json:
 
@@ -123,7 +126,7 @@ Open a terminal and run: `npm run deploy`
 
 Leave all the defaults that vercel offers you (so never manually state Y or N, just hit enter on every question).
 
-Click on the URL at the end.
+Click on the generated URL in the terminal at the end.
 
 Check if you get your React app on the home route.
 
@@ -162,15 +165,17 @@ And check now if your routing also works on your deployed vercel app.
 
 #### Prevent route naming conflicts 
 
-In Fullstack deploys, where both frontend and backend run on the same domain, we need to take care of route name conflicts between frontend & backend routes.
+In Fullstack deploys where both frontend and backend run on the same domain, we need to take care of route name conflicts between frontend & backend routes.
 
 E.g. let's say we have a route /users.
 
 We have a frontend route yourdomain.com/users which should display all users in an UI. 
 
-But we also have a backend route /users which will be used to fetch users from the database. 
+We also have a backend route /users which will be used to fetch users from the database. 
 
-And now we got a conflict. Express can only serve ONE of these requests on the same route.
+And now we got a conflict. 
+
+Express can only serve ONE of these requests on the that route.
 
 To prevent naming conflicts between your frontend routes & backend routes we need to make sure, our API routes are all unique and not used by react router.
 
@@ -184,7 +189,9 @@ So e.g.:
 
 No route name conflict anymore!
 
-Unfortunately there is not way how to set a global prefix for ALL your backend routes in your app. You can just set prefixes when you setup a single router.
+Unfortunately there is no way how to set a global prefix for ALL your backend routes in your app. 
+
+You can just set prefixes when you setup a single router.
 
 So you can easily prefix your routes in your API when you import your routers in the app.js.
 
@@ -220,9 +227,9 @@ const conf = {
     serverUrl: '<mongoatlasServerUrl>',
   },
   auth: {
-    jwt-secret: 'holySecret2020',
-    cookie-name: 'auth-token',
-    cookie-lifetime: 1000*60*15, // milliseconds * seconds * minutes 
+    jwt-secret: '<yourJwtSecret>',
+    cookie-name: '<cookieName>',
+    cookie-lifetime: <lifetimeInMilliseconds>
   }
   ...
 }
@@ -234,7 +241,9 @@ Important! Add the .env.js file to your .gitignore!
 
 But how do others know, who will checkout your code, what they need to put in that file?
 
-There you often see a sample config with dummy (non sensitive) values. 
+There you often see a sample config with dummy (non sensitive) values.
+
+You can e.g. call it: .env.sample.js
 
 Example:
 
@@ -256,7 +265,9 @@ const conf = {
 module.exports = conf
 ```
 
-THAT one you can safely add and commit to your code repository. So other have a sample and create their own .env.js file and put in there THEIR OWN sensitive information.
+THAT sample file you can safely add and commit to your code repository. 
+
+So other people get a sample now and create their own .env.js file from that and put in THEIR OWN sensitive information into that.
 
 That's it! This is how you can create a secure and easy to share configuration for your app easily. 
 
