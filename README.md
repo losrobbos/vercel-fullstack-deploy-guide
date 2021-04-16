@@ -130,16 +130,28 @@ Click on the generated URL in the terminal at the end.
 
 Check if you get your React app on the home route.
 
-Now check one of your express backend routes (e.g. /users). Here you should get now see the Express API responding.
+Now check one of your express backend routes (e.g. /users). Here you should now see the Express API responding.
+
+So first milestone! We can now access both React + Express at one domain!
 
 
 #### Enable routes of React router
 
 Now we finally need to address the React routes.
 
-E.g. we have a React frontend route /profiles. But remember: We serve now React over express! Express will look now for a backend route "profiles". We do not have an Express route with that name. So Express would just say "route does not exist" and throw an error.
+E.g. we have a React frontend route /profiles.
 
-We now - AFTER all other routes were declared - need to setup a "catch all" route which will forward every route that does not match an express route - to React! Respectively to the index.html file. 
+When we navigate to this route via a React Router link, it will work fine.
+
+But what happens if we refresh the page or call "<ourDomain>/profiles" directly in the browser?
+
+Now we get a problem. This request will get now handled by Express first! Because all our traffic, even to the frontend, goes now through Express....
+
+Express will look now for a backend route "/profiles". 
+
+We do not have an Express route with that name. So Express would just say "route does not exist" and throw an error.
+
+We now - AFTER all other routes were declared - need to setup a "catch all" route which will forward every route that does not match an express route - to React! Respectively to the index.html file.
 
 React router will then receive that route. And can process it.
 
