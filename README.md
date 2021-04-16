@@ -289,8 +289,8 @@ Finally a quick walkthrough how to test a vercel fullstack deploy with the least
 
 - Create a project with express generator
 - Create a folder "client" in there and run npx create-react-app in the client folder
-- Add a build script for building react + the deploy and predeploy scripts in ththe package.json of your main express folder
-- Place the two route handlers above for serving react from express, in your app.js file
+- Add a build script for building react + the deploy and predeploy scripts in the package.json of your main express folder
+- Place the two route handlers for serving react from express in your server startup file
 - Add the vercel.json above in your express main folder
 - Run `npm run deploy`
 - Open the generated URL
